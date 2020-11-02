@@ -37,11 +37,10 @@ class Proj4GUI( QMainWindow ):
 		self.PLAIN_STYLE = "background-color: rgb(255, 255, 255)"
 
 		self.seqs = self.loadSequencesFromFile()
-		self.processed_results = None
+		self.processed_results = []
 
 		self.initUI()
 		self.solver = GeneSequencing()
-
 
 	def processClicked(self):
 		sequences = [ self.seqs[i][2] for i in sorted(self.seqs.keys()) ]
@@ -50,10 +49,25 @@ class Proj4GUI( QMainWindow ):
 		self.statusBar.showMessage('Processing...')
 		app.processEvents()
 		start = time.time()
-		self.processed_results = self.solver.align( sequences, 
-													self.table,
-													banded=self.banded.isChecked(),
+		
+#		self.processed_results = self.solver.align( sequences, 
+#													self.table,
+#													banded=self.banded.isChecked(),
+#													align_length=int(self.alignLength.text()))
+		for i in range(len(sequences)):
+			jresults = []
+			for j in range(len(sequences)):
+				if(j < i):
+					s = {}
+				else:
+					s = self.solver.align(sequences[i], sequences[j], banded=self.banded.isChecked(),
 													align_length=int(self.alignLength.text()))
+					self.table.item(i,j).setText('{}'.format(int(s['align_cost']) if s['align_cost'] != math.inf else s['align_cost']))
+					#table.repaint()
+					app.processEvents()
+				jresults.append(s)
+			self.processed_results.append(jresults)
+
 		end = time.time()
 		ns = end-start
 		nm = math.floor(ns/60.)
@@ -67,7 +81,7 @@ class Proj4GUI( QMainWindow ):
 		self.repaint()
 
 	def clearClicked(self):
-		self.processed_results = None
+		self.processed_results = []
 		self.resetTable()
 		self.processButton.setEnabled(True)
 		self.clearButton.setEnabled(False)
