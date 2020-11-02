@@ -46,12 +46,12 @@ class GeneSequencing:
 		incrementer = 0
 		for i in range(0, len(seq2)):
 			self.matrix[i][0] = incrementer
-			incrementer += 1
+			incrementer += 5
 		incrementer = 0
 		for i in range(0, len(seq1)):
 			self.matrix[0][i] = incrementer
-			incrementer += 1
-		#TODO: FIX THIS SHIT
+			incrementer += 5
+		#TODO: FIX THIS
 		for i in range(1,  len(seq2)):
 			for j in range(1, len(seq1)):
 				temp = seq2[i - 1]
@@ -73,7 +73,7 @@ class GeneSequencing:
 # you whether you should compute a banded alignment or full alignment, and _align_length_ tells you 
 # how many base pairs to use in computing the alignment
 
-	def align( self, seq1, seq2, banded, align_length):
+	def align(self, seq1, seq2, banded, align_length):
 		self.banded = banded
 		self.MaxCharactersToAlign = align_length
 
